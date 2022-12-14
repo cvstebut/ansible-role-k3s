@@ -1,4 +1,3 @@
----
 
 - name: Reload systemd
   ansible.builtin.systemd:
@@ -19,10 +18,11 @@
     enabled: "{{ k3s_start_on_boot }}"
   retries: 3
   delay: 3
+  until: k3s_systemd_restart_k3s is success
   register: k3s_systemd_restart_k3s
   failed_when:
-    - k3s_systemd_restart_k3s is not success
-    - not ansible_check_mode
+  - k3s_systemd_restart_k3s is not success
+  - not ansible_check_mode
   become: "{{ k3s_become }}"
 
 - name: Restart k3s service
@@ -32,8 +32,9 @@
     enabled: "{{ k3s_start_on_boot }}"
   retries: 3
   delay: 3
+  until: k3s_service_restart_k3s is success
   register: k3s_service_restart_k3s
   failed_when:
-    - k3s_service_restart_k3s is not success
-    - not ansible_check_mode
+  - k3s_service_restart_k3s is not success
+  - not ansible_check_mode
   become: "{{ k3s_become }}"
